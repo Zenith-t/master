@@ -129,17 +129,17 @@ export default function AdminLogin() {
         </div>
 
         <div className="mt-8 p-4 bg-gray-100 rounded-md text-sm text-gray-600">
-          <p><strong>Demo Admin Credentials:</strong></p>
-          <p>Email: test@example.com</p>
-          <p>Password: password123</p>
-          <p className="text-xs mt-2 text-blue-600">Click "Connect to Supabase" button (top right) first, then create an account with these credentials.</p>
+          <p><strong>-----:</strong></p>
+          <p>------</p>
+          <p>-----</p>
+          <p className="text-xs mt-2 text-blue-600">-----------------</p>
           <div className="mt-3 p-2 bg-yellow-100 border border-yellow-300 rounded text-yellow-800">
             <p className="text-xs font-semibold">Setup Steps:</p>
             <ol className="text-xs mt-1 list-decimal list-inside">
-              <li>Click "Connect to Supabase" (top right)</li>
-              <li>Go to Supabase Auth → Users</li>
-              <li>Click "Add User" and create account with above credentials</li>
-              <li>Return here and login</li>
+              <li>-------------------</li>
+              <li>------------</li>
+              <li>------------</li>
+              <li>---------------</li>
             </ol>
           </div>
         </div>

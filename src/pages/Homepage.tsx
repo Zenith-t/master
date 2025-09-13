@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Phone, Star, MapPin, Clock, ArrowRight, X, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../contexts/SupabaseContext';
+import { RatingsCounter } from '../utils/ratingsCounter';
 
 interface SliderImage {
   id: string;
@@ -239,7 +240,9 @@ export default function Homepage() {
       
       <div className="flex items-center mb-2">
         <div className="flex">{renderStars(service.rating)}</div>
-        <span className="ml-2 text-xs text-gray-600">({service.rating}/5)</span>
+        <span className="ml-2 text-xs text-gray-600">
+          ({RatingsCounter.formatCount(RatingsCounter.getRatingCount(service.id))} reviews)
+        </span>
       </div>
 
       <div className="flex items-center text-gray-600 mb-2">
@@ -280,7 +283,7 @@ export default function Homepage() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center text-blue-600">
                 <Phone className="h-5 w-5 mr-2" />
-                <span className="font-semibold">Call: +91-9999999999</span>
+                <span className="font-semibold">Call: +91 7678229653</span>
               </div>
               <button 
                 onClick={() => navigate('/admin')}
@@ -312,13 +315,13 @@ export default function Homepage() {
                         <h2 className="text-4xl font-bold text-white mb-6">{image.title}</h2>
                         <div className="flex justify-center space-x-4">
                           <a
-                            href="tel:+919871199768"
+                            href="tel:+91 7678229653"
                             className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center shadow-lg"
                           >
                             📞 Call Now
                           </a>
                           <a
-                            href="https://wa.me/919871199768"
+                            href="https://wa.me/917678229653"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center shadow-lg"
@@ -371,7 +374,7 @@ export default function Homepage() {
               onClick={() => setActiveTab('health')}
               className={`px-8 py-3 rounded-md font-semibold transition-all duration-300 relative overflow-hidden ${
                 activeTab === 'health'
-                  ? 'bg-blue-600 text-white shadow-md transform scale-105'
+                  ? 'bg-blue-600 text-white border-2 border-yellow-400 shadow-md transform scale-105'
                   : 'text-gray-600 hover:text-blue-600 hover:bg-gray-200'
               }`}
             >
@@ -384,7 +387,7 @@ export default function Homepage() {
               onClick={() => setActiveTab('tutors')}
               className={`px-8 py-3 rounded-md font-semibold transition-all duration-300 relative overflow-hidden ${
                 activeTab === 'tutors'
-                  ? 'bg-blue-600 text-white shadow-md transform scale-105'
+                  ? 'bg-blue-600 text-white border-2 border-yellow-400 shadow-md transform scale-105'
                   : 'text-gray-600 hover:text-blue-600 hover:bg-gray-200'
               }`}
             >
@@ -404,7 +407,7 @@ export default function Homepage() {
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Our Clinics</h3>
                 <button
-                  onClick={() => navigate('/health')}
+                  onClick={() => navigate('/clinics')}
                   className="text-blue-600 hover:text-blue-800 font-semibold flex items-center"
                 >
                   View All Services <ArrowRight className="h-4 w-4 ml-1" />
@@ -428,7 +431,7 @@ export default function Homepage() {
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Hospitals</h3>
                 <button
-                  onClick={() => navigate('/health')}
+                  onClick={() => navigate('/hospitals')}
                   className="text-blue-600 hover:text-blue-800 font-semibold flex items-center"
                 >
                   View All Services <ArrowRight className="h-4 w-4 ml-1" />
@@ -452,7 +455,7 @@ export default function Homepage() {
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Diagnostic Centers</h3>
                 <button
-                  onClick={() => navigate('/health')}
+                  onClick={() => navigate('/diagnostic-centers')}
                   className="text-blue-600 hover:text-blue-800 font-semibold flex items-center"
                 >
                   View All Services <ArrowRight className="h-4 w-4 ml-1" />
@@ -554,7 +557,7 @@ export default function Homepage() {
                   <div className="relative max-w-4xl mx-auto">
                     <div className="overflow-hidden rounded-xl shadow-2xl">
                       <div 
-                        className="flex transition-transform duration-700 ease-in-out"
+                        className="flex transition-transform duration-500 ease-in-out"
                         style={{ transform: `translateX(-${currentBannerSlide * 100}%)` }}
                       >
                         {tutorBanners.map((banner, index) => (
@@ -646,6 +649,12 @@ export default function Homepage() {
                                     <p className="text-blue-600">{teacher.specialization}</p>
                                     <p className="text-sm text-gray-600">{teacher.school_name}</p>
                                   </div>
+                                </div>
+                                <div className="flex items-center mb-2">
+                                  <div className="flex">{renderStars(teacher.rating)}</div>
+                                  <span className="ml-2 text-sm text-gray-600">
+                                    ({RatingsCounter.formatCount(RatingsCounter.getRatingCount(teacher.id))})
+                                  </span>
                                 </div>
                                 <div className="text-sm text-gray-600 mb-4">
                                   <p><strong>Qualifications:</strong> {teacher.qualifications}</p>
@@ -953,7 +962,9 @@ export default function Homepage() {
                   <p className="text-blue-600 font-semibold text-lg mb-2">{selectedTeacher.specialization}</p>
                   <div className="flex items-center mb-2">
                     <div className="flex">{renderStars(selectedTeacher.rating)}</div>
-                    <span className="ml-2 text-sm text-gray-600">({selectedTeacher.rating}/5)</span>
+                    <span className="ml-2 text-sm text-gray-600">
+                      ({RatingsCounter.formatCount(RatingsCounter.getRatingCount(selectedTeacher.id))} reviews)
+                    </span>
                   </div>
                   {selectedTeacher.school_name && (
                     <p className="text-gray-600 font-medium">{selectedTeacher.school_name}</p>

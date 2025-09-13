@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Star, Phone, MapPin, Clock, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../contexts/SupabaseContext';
+import { RatingsCounter } from '../utils/ratingsCounter';
 
 interface Clinic {
   id: string;
@@ -73,43 +74,58 @@ export default function HealthServices() {
 
   const ServiceCard = ({ service, type }: { service: any; type: string }) => (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 border border-gray-100">
-      {service.image_url && (
-        <img
-          src={service.image_url}
-          alt={service.name}
-          className="w-full h-32 object-cover rounded-md mb-4"
-        />
-      )}
-      <h3 className="text-xl font-semibold text-gray-900 mb-2">{service.name}</h3>
-      <p className="text-blue-600 font-medium mb-2">{service.specialization}</p>
-      
-      <div className="flex items-center mb-2">
-        <div className="flex">{renderStars(service.rating)}</div>
-        <span className="ml-2 text-sm text-gray-600">({service.rating}/5)</span>
-      </div>
-
-      <div className="flex items-center text-gray-600 mb-2">
-        <Clock className="h-4 w-4 mr-2" />
-        <span className="text-sm">{service.experience} years experience</span>
-      </div>
-
-      {service.address && (
-        <div className="flex items-center text-gray-600 mb-4">
-          <MapPin className="h-4 w-4 mr-2" />
-          <span className="text-sm">{service.address}</span>
+      <div className="flex gap-4">
+        {/* Image Section */}
+        <div className="flex-shrink-0">
+          {service.image_url ? (
+            <img
+              src={service.image_url}
+              alt={service.name}
+              className="w-32 h-32 object-cover rounded-lg"
+            />
+          ) : (
+            <div className="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+              <span className="text-gray-400 text-sm">No Image</span>
+            </div>
+          )}
         </div>
-      )}
 
-      <div className="flex justify-between items-center">
-        {service.phone && (
-          <a
-            href={`tel:${service.phone}`}
-            className="flex items-center bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors w-full justify-center"
-          >
-            <Phone className="h-4 w-4 mr-1" />
-            <span className="text-sm font-medium">Call Now</span>
-          </a>
-        )}
+        {/* Content Section */}
+        <div className="flex-1">
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">{service.name}</h3>
+          <p className="text-blue-600 font-medium mb-2">{service.specialization}</p>
+          
+          <div className="flex items-center mb-2">
+            <div className="flex">{renderStars(service.rating)}</div>
+            <span className="ml-2 text-sm text-gray-600">
+              ({RatingsCounter.formatCount(RatingsCounter.getRatingCount(service.id))} reviews)
+            </span>
+          </div>
+
+          <div className="flex items-center text-gray-600 mb-2">
+            <Clock className="h-4 w-4 mr-2" />
+            <span className="text-sm">{service.experience} years experience</span>
+          </div>
+
+          {service.address && (
+            <div className="flex items-center text-gray-600 mb-4">
+              <MapPin className="h-4 w-4 mr-2" />
+              <span className="text-sm">{service.address}</span>
+            </div>
+          )}
+
+          <div className="flex justify-between items-center">
+            {service.phone && (
+              <a
+                href={`tel:${service.phone}`}
+                className="flex items-center bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+              >
+                <Phone className="h-4 w-4 mr-1" />
+                <span className="text-sm font-medium">Call Now</span>
+              </a>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
