@@ -322,21 +322,21 @@ ON CONFLICT DO NOTHING;
 
 -- Sample Clinics
 INSERT INTO public.clinics (name, specialization, experience, rating, phone, address, image_url) VALUES
-('City Medical Center', 'General Medicine', 15, 5, '+91 9871199768', 'Central Delhi', 'https://images.pexels.com/photos/4386466/pexels-photo-4386466.jpeg'),
-('Heart Care Clinic', 'Cardiology', 20, 5, '+91 9871199768', 'South Delhi', 'https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg'),
-('Dental Care Plus', 'Dentistry', 12, 4, '+91 9871199768', 'North Delhi', 'https://images.pexels.com/photos/4386468/pexels-photo-4386468.jpeg')
+('City Medical Center', 'General Medicine', 15, 5, '+91 7678229653', 'Central Delhi', 'https://images.pexels.com/photos/4386466/pexels-photo-4386466.jpeg'),
+('Heart Care Clinic', 'Cardiology', 20, 5, '+91 7678229653', 'South Delhi', 'https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg'),
+('Dental Care Plus', 'Dentistry', 12, 4, '+91 7678229653', 'North Delhi', 'https://images.pexels.com/photos/4386468/pexels-photo-4386468.jpeg')
 ON CONFLICT DO NOTHING;
 
 -- Sample Hospitals
 INSERT INTO public.hospitals (name, specialization, experience, rating, phone, address, image_url) VALUES
-('Metro Hospital', 'Multi-Specialty', 25, 5, '+91 9871199768', 'Central Delhi', 'https://images.pexels.com/photos/4386469/pexels-photo-4386469.jpeg'),
-('Children Hospital', 'Pediatrics', 18, 5, '+91 9871199768', 'East Delhi', 'https://images.pexels.com/photos/4386470/pexels-photo-4386470.jpeg')
+('Metro Hospital', 'Multi-Specialty', 25, 5, '+91 7678229653', 'Central Delhi', 'https://images.pexels.com/photos/4386469/pexels-photo-4386469.jpeg'),
+('Children Hospital', 'Pediatrics', 18, 5, '+91 7678229653', 'East Delhi', 'https://images.pexels.com/photos/4386470/pexels-photo-4386470.jpeg')
 ON CONFLICT DO NOTHING;
 
 -- Sample Diagnostic Centers
 INSERT INTO public.diagnostic_centers (name, specialization, experience, rating, phone, address, image_url) VALUES
-('Advanced Diagnostics', 'Radiology & Lab', 10, 5, '+91 9871199768', 'West Delhi', 'https://images.pexels.com/photos/4386471/pexels-photo-4386471.jpeg'),
-('Quick Lab Services', 'Pathology', 8, 4, '+91 9871199768', 'South Delhi', 'https://images.pexels.com/photos/4386472/pexels-photo-4386472.jpeg')
+('Advanced Diagnostics', 'Radiology & Lab', 10, 5, '+91 7678229653', 'West Delhi', 'https://images.pexels.com/photos/4386471/pexels-photo-4386471.jpeg'),
+('Quick Lab Services', 'Pathology', 8, 4, '+91 7678229653', 'South Delhi', 'https://images.pexels.com/photos/4386472/pexels-photo-4386472.jpeg')
 ON CONFLICT DO NOTHING;
 
 -- Sample Teachers
