@@ -76,7 +76,7 @@ export default function ClinicsPage() {
             </div>
             <div className="flex items-center">
               <Phone className="h-5 w-5 mr-2 text-blue-600" />
-              <span className="font-semibold text-blue-600">Call: +91 7678229653</span>
+              <span className="font-semibold text-blue-600">Call: +91 9871199768</span>
             </div>
           </div>
         </div>

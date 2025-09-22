@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, User } from 'lucide-react';
+import { Lock, User, Mail, ArrowLeft } from 'lucide-react';
 import { useSupabase } from '../contexts/SupabaseContext';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
   const { supabase } = useSupabase();
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [resetEmail, setResetEmail] = useState('');
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,6 +56,107 @@ export default function AdminLogin() {
       [e.target.name]: e.target.value
     });
   };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setMessage('');
+
+    try {
+      if (!import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL === 'your-supabase-url') {
+        setError('Please connect to Supabase first using the "Connect to Supabase" button in the top right corner.');
+        setLoading(false);
+        return;
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/admin`,
+      });
+
+      if (error) {
+        setError(error.message);
+      } else {
+        setMessage('Password reset email sent! Check your inbox.');
+        setResetEmail('');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to send reset email');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (showForgotPassword) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
+          <div className="text-center mb-8">
+            <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Mail className="h-8 w-8 text-blue-600" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900">Reset Password</h2>
+            <p className="text-gray-600 mt-2">Enter your email to receive reset instructions</p>
+          </div>
+
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              {error}
+            </div>
+          )}
+
+          {message && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+              {message}
+            </div>
+          )}
+
+          <form onSubmit={handleForgotPassword}>
+            <div className="mb-6">
+              <label htmlFor="resetEmail" className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="h-5 w-5 text-gray-400 absolute left-3 top-3" />
+                <input
+                  type="email"
+                  id="resetEmail"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {loading ? 'Sending...' : 'Send Reset Email'}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => {
+                setShowForgotPassword(false);
+                setError('');
+                setMessage('');
+                setResetEmail('');
+              }}
+              className="flex items-center justify-center mx-auto text-blue-600 hover:text-blue-800 transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              Back to Login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
@@ -120,6 +224,12 @@ export default function AdminLogin() {
         </form>
 
         <div className="mt-6 text-center">
+          <button
+            onClick={() => setShowForgotPassword(true)}
+            className="text-blue-600 hover:text-blue-800 transition-colors mb-4 block mx-auto"
+          >
+            Forgot Password?
+          </button>
           <button
             onClick={() => navigate('/')}
             className="text-blue-600 hover:text-blue-800 transition-colors"
