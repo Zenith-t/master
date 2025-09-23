@@ -448,13 +448,6 @@ export default function Homepage() {
 
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <a
-              href="tel:+91 7678229653"
-              className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center shadow-lg"
-            >
-              <Phone className="h-5 w-5 mr-2" />
-              Call for Appointment: +91 7678229653
-            </a>
           </div>
           <div className="bg-orange-100 border border-orange-200 rounded-lg p-4 inline-block">
             <p className="text-orange-800 font-semibold">
