@@ -433,6 +433,26 @@ export default function Homepage() {
         {activeTab === 'health' && (
           <>
             {/* Our Clinics Preview */}
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <div className="text-center mb-8">
+                      <div className="flex justify-center mb-4">
+                        <a
+                          href="tel:+91 7678229653"
+                          className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center shadow-lg"
+                        >
+                          <Phone className="h-5 w-5 mr-2" />
+                          Call for Appointment: +91 7678229653
+                        </a>
+                      </div>
+                      <div className="bg-orange-100 border border-orange-200 rounded-lg p-4 inline-block">
+                        <p className="text-orange-800 font-semibold">
+                          📞 Before going call to get ₹100 - ₹5000 discount
+                        </p>
+                      </div>
+                    </div>
+
+                    
             <section className="mb-12">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Our Clinics</h3>
@@ -446,14 +466,7 @@ export default function Homepage() {
 
 
 
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-          </div>
-          <div className="bg-orange-100 border border-orange-200 rounded-lg p-4 inline-block">
-            <p className="text-orange-800 font-semibold">
-              📞 Before going call to get ₹100 - ₹5000 discount
-            </p>
-          </div>
+
         
 
 
