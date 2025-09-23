@@ -452,7 +452,7 @@ export default function Homepage() {
                       </div>
                     </div>
 
-                    
+
             <section className="mb-12">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Our Clinics</h3>
@@ -519,11 +519,7 @@ export default function Homepage() {
                   View All Services <ArrowRight className="h-4 w-4 ml-1" />
                 </button>
               </div>
-              <div className="bg-orange-100 border border-orange-200 rounded-lg p-4 inline-block">
-            <p className="text-orange-800 font-semibold">
-              📞 Before going call to get ₹100 - ₹5000 discount
-            </p>
-          </div>
+
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {diagnosticCenters.length > 0 ? (
