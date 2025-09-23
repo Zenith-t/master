@@ -12,6 +12,7 @@ import BlogList from './pages/BlogList';
 import BlogDetail from './pages/BlogDetail';
 import SchoolJobs from './pages/SchoolJobs';
 import HomeTuition from './pages/HomeTuition';
+import PasswordReset from './pages/PasswordReset';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/school-jobs" element={<SchoolJobs />} />
           <Route path="/home-tuition" element={<HomeTuition />} />
+          <Route path="/password-reset" element={<PasswordReset />} />
         </Routes>
       </Router>
     </SupabaseProvider>

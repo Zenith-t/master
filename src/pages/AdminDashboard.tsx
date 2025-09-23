@@ -17,6 +17,7 @@ import {
   Image as ImageIcon
 } from 'lucide-react';
 import ImageUpload from '../components/ImageUpload';
+import RichTextEditor from '../components/RichTextEditor';
 
 interface SliderImage {
   id: string;
@@ -746,13 +747,11 @@ export default function AdminDashboard() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
-              <textarea
+              <RichTextEditor
                 value={formData.content || ''}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-                rows={10}
-                placeholder="Write your blog content here. Use ## for headings and **text** for bold."
-                required
+                onChange={(content) => setFormData({ ...formData, content })}
+                placeholder="Write your blog content with rich formatting..."
+                className="w-full"
               />
             </div>
             <div>
