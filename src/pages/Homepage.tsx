@@ -491,12 +491,13 @@ export default function Homepage() {
                 >
                   View All Services <ArrowRight className="h-4 w-4 ml-1" />
                 </button>
-              </div>
-              <div className="bg-orange-100 border border-orange-200 rounded-lg p-4 inline-block">
-            <p className="text-orange-800 font-semibold">
-              📞 Before going call to get ₹100 - ₹5000 discount
-            </p>
-          </div>
+                  <div className="flex justify-center">
+                    <div className="bg-orange-100 border border-orange-200 rounded-lg p-4 inline-block">
+                      <p className="text-orange-800 font-semibold">
+                        📞 Before going call to get ₹100 - ₹5000 discount
+                      </p>
+                    </div>
+                  </div>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {diagnosticCenters.length > 0 ? (
