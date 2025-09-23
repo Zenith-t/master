@@ -531,6 +531,7 @@ export default function Homepage() {
                 >
                   View All Services <ArrowRight className="h-4 w-4 ml-1" />
                 </button>
+                </div>
                 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-8">
