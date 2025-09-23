@@ -24,16 +24,33 @@ export default function PasswordReset() {
     const refreshToken = searchParams.get('refresh_token');
     const type = searchParams.get('type');
 
-    if (type === 'recovery' && accessToken && refreshToken) {
-      // Set the session with the tokens
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken
-      });
-    } else if (!type || type !== 'recovery') {
-      // If no recovery type, redirect to login
-      navigate('/admin');
-    }
+    const initializeSession = async () => {
+      if (type === 'recovery' && accessToken && refreshToken) {
+        try {
+          // Set the session with the tokens
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+          
+          if (error) {
+            console.error('Session error:', error);
+            setError('Invalid or expired reset link. Please request a new password reset.');
+            setTimeout(() => navigate('/admin'), 3000);
+          }
+        } catch (err) {
+          console.error('Session initialization error:', err);
+          setError('Failed to initialize session. Please try again.');
+          setTimeout(() => navigate('/admin'), 3000);
+        }
+      } else if (!type || type !== 'recovery') {
+        // If no recovery type, redirect to login
+        setError('Invalid reset link. Redirecting to login...');
+        setTimeout(() => navigate('/admin'), 2000);
+      }
+    };
+
+    initializeSession();
   }, [searchParams, supabase.auth, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,12 +101,26 @@ export default function PasswordReset() {
         return;
       }
 
+      // Check if user is authenticated
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setError('Authentication session expired. Please request a new password reset link.');
+        setLoading(false);
+        setTimeout(() => navigate('/admin'), 3000);
+        return;
+      }
+
       const { error } = await supabase.auth.updateUser({
         password: formData.password
       });
 
       if (error) {
-        setError(error.message);
+        if (error.message.includes('Auth session missing')) {
+          setError('Your session has expired. Please request a new password reset link.');
+          setTimeout(() => navigate('/admin'), 3000);
+        } else {
+          setError(error.message);
+        }
       } else {
         setSuccess(true);
         // Redirect to admin dashboard after 3 seconds
@@ -98,7 +129,12 @@ export default function PasswordReset() {
         }, 3000);
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to reset password');
+      if (err.message && err.message.includes('Auth session missing')) {
+        setError('Your session has expired. Please request a new password reset link.');
+        setTimeout(() => navigate('/admin'), 3000);
+      } else {
+        setError(err.message || 'Failed to reset password');
+      }
     } finally {
       setLoading(false);
     }
