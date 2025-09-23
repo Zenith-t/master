@@ -492,16 +492,7 @@ export default function Homepage() {
                   View All Services <ArrowRight className="h-4 w-4 ml-1" />
                 </button>
                 
-                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-          </div>
-          <div className="bg-orange-100 border border-orange-200 rounded-lg p-4 inline-block">
-            <p className="text-orange-800 font-semibold">
-              📞 Before going call to get ₹100 - ₹5000 discount
-            </p>
-          </div>
-        </div>   
+
                    
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {diagnosticCenters.length > 0 ? (
