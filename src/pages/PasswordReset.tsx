@@ -12,28 +12,51 @@ export default function PasswordReset() {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [sessionReady, setSessionReady] = useState(false);
   
   const [formData, setFormData] = useState({
     password: '',
     confirmPassword: ''
   });
 
-  // Check if we have access_token and refresh_token from URL
+  // Handle session setup from URL parameters
   useEffect(() => {
+    const setupSession = async () => {
+      try {
     const accessToken = searchParams.get('access_token');
     const refreshToken = searchParams.get('refresh_token');
     const type = searchParams.get('type');
 
-    if (type === 'recovery' && accessToken && refreshToken) {
-      // Set the session with the tokens
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken
-      });
-    } else if (!type || type !== 'recovery') {
-      // If no recovery type, redirect to login
-      navigate('/admin');
-    }
+        if (type === 'recovery' && accessToken && refreshToken) {
+          // Set the session with the tokens
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+
+          if (error) {
+            console.error('Session setup error:', error);
+            setError('Invalid or expired reset link. Please request a new password reset.');
+            setTimeout(() => navigate('/admin'), 3000);
+          } else if (data.session) {
+            setSessionReady(true);
+          }
+        } else if (!type || type !== 'recovery') {
+          // If no recovery type, redirect to login
+          setError('Invalid reset link. Redirecting to login...');
+          setTimeout(() => navigate('/admin'), 2000);
+        } else {
+          setError('Missing required parameters in reset link.');
+          setTimeout(() => navigate('/admin'), 3000);
+        }
+      } catch (err) {
+        console.error('Setup session error:', err);
+        setError('Failed to process reset link. Please try again.');
+        setTimeout(() => navigate('/admin'), 3000);
+      }
+    };
+
+    setupSession();
   }, [searchParams, supabase.auth, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,6 +78,13 @@ export default function PasswordReset() {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    // Check if session is ready
+    if (!sessionReady) {
+      setError('Session not ready. Please wait or try clicking the reset link again.');
+      setLoading(false);
+      return;
+    }
 
     // Validation
     if (!formData.password || !formData.confirmPassword) {
@@ -84,12 +114,24 @@ export default function PasswordReset() {
         return;
       }
 
+      // Verify we have a valid session before updating password
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setError('No active session found. Please click the reset link again.');
+        setLoading(false);
+        return;
+      }
+
       const { error } = await supabase.auth.updateUser({
         password: formData.password
       });
 
       if (error) {
-        setError(error.message);
+        if (error.message.includes('Auth session missing')) {
+          setError('Session expired. Please request a new password reset link.');
+        } else {
+          setError(error.message);
+        }
       } else {
         setSuccess(true);
         // Redirect to admin dashboard after 3 seconds
@@ -103,6 +145,22 @@ export default function PasswordReset() {
       setLoading(false);
     }
   };
+
+  // Show loading while setting up session
+  if (!sessionReady && !error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
+          <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Lock className="h-8 w-8 text-blue-600" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Setting up session...</h2>
+          <p className="text-gray-600 mb-6">Please wait while we verify your reset link.</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
 
   if (success) {
     return (
@@ -195,7 +253,7 @@ export default function PasswordReset() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !sessionReady}
             className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? 'Updating Password...' : 'Update Password'}
@@ -218,6 +276,13 @@ export default function PasswordReset() {
             <li>Use a strong, unique password</li>
             <li>Consider using a password manager</li>
           </ul>
+          
+          {!sessionReady && (
+            <div className="mt-4 p-3 bg-yellow-100 border border-yellow-300 rounded text-yellow-800">
+              <p className="text-xs font-semibold">Session Status: Not Ready</p>
+              <p className="text-xs mt-1">Please wait for the session to be established or click the reset link again.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
