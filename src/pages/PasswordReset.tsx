@@ -23,35 +23,70 @@ export default function PasswordReset() {
   useEffect(() => {
     const setupSession = async () => {
       try {
-    const accessToken = searchParams.get('access_token');
-    const refreshToken = searchParams.get('refresh_token');
-    const type = searchParams.get('type');
+        // Check for different possible parameter formats from Supabase
+        const accessToken = searchParams.get('access_token') || searchParams.get('token');
+        const refreshToken = searchParams.get('refresh_token');
+        const type = searchParams.get('type');
+        const code = searchParams.get('code');
+        
+        console.log('URL Parameters:', {
+          accessToken: !!accessToken,
+          refreshToken: !!refreshToken,
+          type,
+          code: !!code,
+          allParams: Object.fromEntries(searchParams.entries())
+        });
 
-        if (type === 'recovery' && accessToken && refreshToken) {
+        // Handle different Supabase auth flows
+        if (type === 'recovery' && accessToken) {
           // Set the session with the tokens
-          const { data, error } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken
-          });
+          let sessionResult;
+          
+          if (refreshToken) {
+            // Use both tokens if available
+            sessionResult = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken
+            });
+          } else {
+            // Try with just access token
+            sessionResult = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: '' // Provide empty string as fallback
+            });
+          }
 
+          if (sessionResult.error) {
+            console.error('Session setup error:', sessionResult.error);
+            setError('Invalid or expired reset link. Please request a new password reset.');
+            setTimeout(() => navigate('/admin'), 3000);
+          } else if (sessionResult.data.session) {
+            setSessionReady(true);
+          }
+        } else if (code) {
+          // Handle OAuth code flow (newer Supabase versions)
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+          
           if (error) {
-            console.error('Session setup error:', error);
+            console.error('Code exchange error:', error);
             setError('Invalid or expired reset link. Please request a new password reset.');
             setTimeout(() => navigate('/admin'), 3000);
           } else if (data.session) {
             setSessionReady(true);
           }
-        } else if (!type || type !== 'recovery') {
-          // If no recovery type, redirect to login
-          setError('Invalid reset link. Redirecting to login...');
-          setTimeout(() => navigate('/admin'), 2000);
+        } else if (type === 'recovery') {
+          // Recovery type present but missing tokens
+          setError('Incomplete reset link. Please request a new password reset.');
+          setTimeout(() => navigate('/admin'), 3000);
         } else {
-          setError('Missing required parameters in reset link.');
+          // No valid parameters found
+          console.log('No valid reset parameters found. Available params:', Object.fromEntries(searchParams.entries()));
+          setError('This appears to be an invalid reset link. Please request a new password reset from the login page.');
           setTimeout(() => navigate('/admin'), 3000);
         }
       } catch (err) {
         console.error('Setup session error:', err);
-        setError('Failed to process reset link. Please try again.');
+        setError('Failed to process reset link. Please request a new password reset.');
         setTimeout(() => navigate('/admin'), 3000);
       }
     };
