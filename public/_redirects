@@ -1,4 +1,9 @@
+[build]
+  publish = "dist"  # या "build" – तुम्हारे React build folder के according
+  command = "npm run build"  # या "yarn build" / Vite command
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  force = true  # Force override अगर कोई static file conflict हो
