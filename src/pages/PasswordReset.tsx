@@ -1,272 +1,319 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Eye, EyeOff, Lock, CheckCircle } from 'lucide-react';
+import { Lock, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
 import { useSupabase } from '../contexts/SupabaseContext';
 
-const PasswordReset: React.FC = () => {
-  const [searchParams] = useSearchParams();
+export default function PasswordReset() {
   const navigate = useNavigate();
   const { supabase } = useSupabase();
-  
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [searchParams] = useSearchParams();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [sessionReady, setSessionReady] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    password: '',
+    confirmPassword: ''
+  });
 
+  // Handle session setup from URL parameters
   useEffect(() => {
-<<<<<<< HEAD
-    const accessToken = searchParams.get('access_token');
-    const refreshToken = searchParams.get('refresh_token');
-    const type = searchParams.get('type');
-    const errorParam = searchParams.get('error');
-
-    console.log('URL Parameters:', { accessToken, refreshToken, type, errorParam });
-
-    if (errorParam) {
-      setError('Invalid or expired reset link. Please request a new password reset.');
-      return;
-    }
-
-    if (type === 'recovery' && accessToken && refreshToken) {
-      // Set the session with the tokens from URL
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken
-      }).then(({ data, error }) => {
-        if (error) {
-          console.error('Session error:', error);
-          setError('Invalid or expired reset link. Please request a new password reset.');
-        } else {
-          console.log('Session set successfully:', data);
-        }
-      });
-    } else if (!accessToken || !refreshToken) {
-=======
-    // Handle hash fragments (#access_token) for Supabase reset links
-    const hash = window.location.hash.substring(1); // Remove '#' from hash
-    const hashParams = new URLSearchParams(hash);
-    const accessToken = hashParams.get('access_token') || searchParams.get('access_token') || searchParams.get('token');
-    const refreshToken = hashParams.get('refresh_token') || searchParams.get('refresh_token') || searchParams.get('refresh');
-    const type = hashParams.get('type') || searchParams.get('type');
-    const errorParam = hashParams.get('error') || searchParams.get('error');
-    const errorDescription = hashParams.get('error_description') || searchParams.get('error_description');
-
-    console.log('Hash Parameters:', Object.fromEntries(hashParams));
-    console.log('Search Parameters:', Object.fromEntries(searchParams));
-    console.log('Parsed Parameters:', { accessToken, refreshToken, type, errorParam, errorDescription });
-
-    if (errorParam || errorDescription) {
-      setError(`Reset link error: ${errorDescription || errorParam}. Please request a new password reset.`);
-      return;
-    }
-
-    if (accessToken && refreshToken && type === 'recovery') {
-      // Set session with tokens
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      }).then(({ data, error }) => {
-        if (error) {
-          console.error('Session set error:', error);
-          setError(`Session error: ${error.message}. Please request a new password reset.`);
-        } else {
-          console.log('Session set successfully:', data);
-          // Verify session
-          supabase.auth.getSession().then(({ data: sessionData, error: sessionError }) => {
-            if (sessionError || !sessionData.session) {
-              console.error('Session verification failed:', sessionError);
-              setError('Invalid or expired reset link. Please try again.');
-            } else {
-              console.log('Session verified:', sessionData.session);
-              // Clean URL for security
-              window.history.replaceState({}, document.title, '/password-reset');
+    const setupSession = async () => {
+      try {
+        console.log('Current URL:', window.location.href);
+        console.log('Hash:', window.location.hash);
+        console.log('Search params:', window.location.search);
+        
+        // Check if we have the hash fragment
+        const hash = window.location.hash;
+        const search = window.location.search;
+        
+        // Try hash parameters first (most common)
+        if (hash && (hash.includes('access_token') || hash.includes('token'))) {
+          // Parse hash parameters
+          const hashParams = new URLSearchParams(hash.substring(1));
+          const accessToken = hashParams.get('access_token') || hashParams.get('token');
+          const refreshToken = hashParams.get('refresh_token');
+          const type = hashParams.get('type');
+          
+          console.log('Hash params - Access token:', accessToken ? 'Found' : 'Not found');
+          console.log('Hash params - Refresh token:', refreshToken ? 'Found' : 'Not found');
+          console.log('Hash params - Type:', type);
+          
+          if (accessToken && (type === 'recovery' || !type)) {
+            const { data, error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken || ''
+            });
+            
+            if (error) {
+              console.error('Session setup error:', error);
+              setError(`Session setup failed: ${error.message}. Please request a new password reset.`);
+              setTimeout(() => navigate('/admin'), 3000);
+            } else if (data.session) {
+              console.log('Session established successfully');
+              setSessionReady(true);
             }
-          });
+          } else {
+            setError(`Missing required parameters. Found: access_token=${!!accessToken}, type=${type}. Please request a new password reset.`);
+            setTimeout(() => navigate('/admin'), 3000);
+          }
+        } 
+        // Try search parameters as fallback
+        else if (search && (search.includes('access_token') || search.includes('token') || search.includes('code'))) {
+          // Check URL search params as fallback
+          const accessToken = searchParams.get('access_token') || searchParams.get('token');
+          const refreshToken = searchParams.get('refresh_token');
+          const type = searchParams.get('type');
+          const code = searchParams.get('code');
+          
+          console.log('Search params - Access token:', accessToken ? 'Found' : 'Not found');
+          console.log('Search params - Refresh token:', refreshToken ? 'Found' : 'Not found');
+          console.log('Search params - Type:', type);
+          console.log('Search params - Code:', code ? 'Found' : 'Not found');
+          
+          if (code) {
+            // Handle OAuth code flow
+            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+            if (error) {
+              console.error('Code exchange error:', error);
+              setError(`Code exchange failed: ${error.message}. Please request a new password reset.`);
+              setTimeout(() => navigate('/admin'), 3000);
+            } else if (data.session) {
+              console.log('Session established via code exchange');
+              setSessionReady(true);
+            }
+          } else if (accessToken && (type === 'recovery' || !type)) {
+            const { data, error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken || ''
+            });
+            
+            if (error) {
+              console.error('Session setup error:', error);
+              setError(`Session setup failed: ${error.message}. Please request a new password reset.`);
+              setTimeout(() => navigate('/admin'), 3000);
+            } else if (data.session) {
+              console.log('Session established successfully');
+              setSessionReady(true);
+            }
+          } else {
+            setError(`Missing required parameters in search. Found: access_token=${!!accessToken}, type=${type}, code=${!!code}. Please request a new password reset.`);
+            setTimeout(() => navigate('/admin'), 3000);
+          }
+        } else {
+          setError('No reset parameters found in URL. Please click the reset link from your email again.');
+          setTimeout(() => navigate('/admin'), 3000);
         }
-      });
-    } else {
-      console.log('Missing tokens in URL or hash');
->>>>>>> 4438176d7af52e6d26aca0b60d619ba08c3a3c06
-      setError('Invalid reset link. Please request a new password reset.');
+      } catch (err) {
+        console.error('Setup session error:', err);
+        setError(`Failed to process reset link: ${err}. Please request a new password reset.`);
+        setTimeout(() => navigate('/admin'), 3000);
+      }
+    };
+
+    setupSession();
+  }, [searchParams, supabase.auth, navigate]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+    setError(''); // Clear error when user types
+  };
+
+  const validatePassword = (password: string) => {
+    if (password.length < 6) {
+      return 'Password must be at least 6 characters long';
     }
-  }, [searchParams, supabase.auth]);
+    return null;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
+    setError('');
+
+    // Check if session is ready
+    if (!sessionReady) {
+      setError('Session not ready. Please wait or try clicking the reset link again.');
+      setLoading(false);
+      return;
+    }
 
     // Validation
-    if (!password || !confirmPassword) {
+    if (!formData.password || !formData.confirmPassword) {
       setError('Please fill in all fields');
       setLoading(false);
       return;
     }
 
-    if (password !== confirmPassword) {
+    const passwordError = validatePassword(formData.password);
+    if (passwordError) {
+      setError(passwordError);
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       setLoading(false);
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      setLoading(false);
-      return;
-    }
-
     try {
-<<<<<<< HEAD
-      // Check if user has a valid session
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError || !session) {
-        setError('Invalid or expired reset link. Please request a new password reset.');
-=======
-      console.log('Attempting password update...');
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      console.log('Current session:', { session, sessionError });
-
-      if (sessionError || !session) {
-        setError('No active session. Please request a new password reset link.');
->>>>>>> 4438176d7af52e6d26aca0b60d619ba08c3a3c06
+      // Check if Supabase is properly configured
+      if (!import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL === 'your-supabase-url') {
+        setError('Please connect to Supabase first using the "Connect to Supabase" button in the top right corner.');
         setLoading(false);
         return;
       }
 
-<<<<<<< HEAD
-      console.log('Current session:', session);
+      // Verify we have a valid session before updating password
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setError('No active session found. Please click the reset link again.');
+        setLoading(false);
+        return;
+      }
 
-      // Update password
-      const { data, error } = await supabase.auth.updateUser({
-        password: password
-=======
-      const { data, error } = await supabase.auth.updateUser({
-        password: password,
->>>>>>> 4438176d7af52e6d26aca0b60d619ba08c3a3c06
+      const { error } = await supabase.auth.updateUser({
+        password: formData.password
       });
 
-      console.log('Update response:', { data, error });
-
       if (error) {
-<<<<<<< HEAD
-        setError(error.message || 'Failed to update password');
-=======
-        console.error('Password update error:', error);
-        setError(`Failed to update password: ${error.message}`);
->>>>>>> 4438176d7af52e6d26aca0b60d619ba08c3a3c06
+        if (error.message.includes('Auth session missing')) {
+          setError('Session expired. Please request a new password reset link.');
+        } else {
+          setError(error.message);
+        }
       } else {
-        console.log('Password updated successfully:', data);
         setSuccess(true);
-<<<<<<< HEAD
-        // Redirect to admin dashboard after 2 seconds
+        // Redirect to admin dashboard after 3 seconds
         setTimeout(() => {
-          navigate('/admin');
-        }, 2000);
+          navigate('/admin/dashboard');
+        }, 3000);
       }
-    } catch (err) {
-      console.error('Password update error:', err);
-=======
-        setTimeout(() => navigate('/admin'), 2000);
-      }
-    } catch (err) {
-      console.error('Unexpected error:', err);
->>>>>>> 4438176d7af52e6d26aca0b60d619ba08c3a3c06
-      setError('An unexpected error occurred. Please try again.');
+    } catch (err: any) {
+      setError(err.message || 'Failed to reset password');
     } finally {
       setLoading(false);
     }
   };
 
+  // Show loading while setting up session
+  if (!sessionReady && !error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
+          <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Lock className="h-8 w-8 text-blue-600" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Setting up session...</h2>
+          <p className="text-gray-600 mb-6">Please wait while we verify your reset link.</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
+
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md text-center">
-          <div className="mb-6">
-            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">Password Updated!</h1>
-            <p className="text-gray-600">
-              Your password has been successfully updated. Redirecting to dashboard...
-            </p>
+      <div className="min-h-screen bg-gradient-to-br from-green-600 to-green-800 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
+          <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="h-8 w-8 text-green-600" />
           </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Password Reset Successful!</h2>
+          <p className="text-gray-600 mb-6">
+            Your password has been successfully updated. You will be redirected to the admin dashboard shortly.
+          </p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
         <div className="text-center mb-8">
-          <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Lock className="w-8 h-8 text-indigo-600" />
+          <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Lock className="h-8 w-8 text-blue-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Reset Password</h1>
-          <p className="text-gray-600">Enter your new password below</p>
+          <h2 className="text-3xl font-bold text-gray-900">Reset Your Password</h2>
+          <p className="text-gray-600 mt-2">Enter your new password below</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-              {error}
-            </div>
-          )}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 flex items-center">
+            <AlertCircle className="h-5 w-5 mr-2" />
+            {error}
+          </div>
+        )}
 
-          <div>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-6">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
               New Password
             </label>
             <div className="relative">
+              <Lock className="h-5 w-5 text-gray-400 absolute left-3 top-3" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-12"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter new password"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
+            <p className="text-xs text-gray-500 mt-1">Password must be at least 6 characters long</p>
           </div>
 
-          <div>
+          <div className="mb-6">
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-              Confirm Password
+              Confirm New Password
             </label>
             <div className="relative">
+              <Lock className="h-5 w-5 text-gray-400 absolute left-3 top-3" />
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-12"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Confirm new password"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
               >
-                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
           </div>
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            disabled={loading || !sessionReady}
+            className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? 'Updating Password...' : 'Update Password'}
           </button>
@@ -275,14 +322,28 @@ const PasswordReset: React.FC = () => {
         <div className="mt-6 text-center">
           <button
             onClick={() => navigate('/admin')}
-            className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+            className="text-blue-600 hover:text-blue-800 transition-colors"
           >
             Back to Login
           </button>
         </div>
+
+        <div className="mt-8 p-4 bg-gray-100 rounded-md text-sm text-gray-600">
+          <p><strong>Password Requirements:</strong></p>
+          <ul className="list-disc list-inside mt-2 space-y-1">
+            <li>At least 6 characters long</li>
+            <li>Use a strong, unique password</li>
+            <li>Consider using a password manager</li>
+          </ul>
+          
+          {!sessionReady && (
+            <div className="mt-4 p-3 bg-yellow-100 border border-yellow-300 rounded text-yellow-800">
+              <p className="text-xs font-semibold">Session Status: Not Ready</p>
+              <p className="text-xs mt-1">Please wait for the session to be established or click the reset link again.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
-};
-
-export default PasswordReset;
+}

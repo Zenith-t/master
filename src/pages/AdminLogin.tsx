@@ -71,13 +71,13 @@ export default function AdminLogin() {
       }
 
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/password-reset?type=recovery`,
+        redirectTo: `${window.location.origin}/password-reset`,
       });
 
       if (error) {
         setError(error.message);
       } else {
-        setMessage('Password reset email sent! Check your inbox.');
+        setMessage('Password reset email sent! Check your inbox and spam folder.');
         setResetEmail('');
       }
     } catch (err: any) {
