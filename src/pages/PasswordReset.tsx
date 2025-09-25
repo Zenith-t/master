@@ -17,6 +17,7 @@ const PasswordReset: React.FC = () => {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
+<<<<<<< HEAD
     const accessToken = searchParams.get('access_token');
     const refreshToken = searchParams.get('refresh_token');
     const type = searchParams.get('type');
@@ -43,6 +44,52 @@ const PasswordReset: React.FC = () => {
         }
       });
     } else if (!accessToken || !refreshToken) {
+=======
+    // Handle hash fragments (#access_token) for Supabase reset links
+    const hash = window.location.hash.substring(1); // Remove '#' from hash
+    const hashParams = new URLSearchParams(hash);
+    const accessToken = hashParams.get('access_token') || searchParams.get('access_token') || searchParams.get('token');
+    const refreshToken = hashParams.get('refresh_token') || searchParams.get('refresh_token') || searchParams.get('refresh');
+    const type = hashParams.get('type') || searchParams.get('type');
+    const errorParam = hashParams.get('error') || searchParams.get('error');
+    const errorDescription = hashParams.get('error_description') || searchParams.get('error_description');
+
+    console.log('Hash Parameters:', Object.fromEntries(hashParams));
+    console.log('Search Parameters:', Object.fromEntries(searchParams));
+    console.log('Parsed Parameters:', { accessToken, refreshToken, type, errorParam, errorDescription });
+
+    if (errorParam || errorDescription) {
+      setError(`Reset link error: ${errorDescription || errorParam}. Please request a new password reset.`);
+      return;
+    }
+
+    if (accessToken && refreshToken && type === 'recovery') {
+      // Set session with tokens
+      supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      }).then(({ data, error }) => {
+        if (error) {
+          console.error('Session set error:', error);
+          setError(`Session error: ${error.message}. Please request a new password reset.`);
+        } else {
+          console.log('Session set successfully:', data);
+          // Verify session
+          supabase.auth.getSession().then(({ data: sessionData, error: sessionError }) => {
+            if (sessionError || !sessionData.session) {
+              console.error('Session verification failed:', sessionError);
+              setError('Invalid or expired reset link. Please try again.');
+            } else {
+              console.log('Session verified:', sessionData.session);
+              // Clean URL for security
+              window.history.replaceState({}, document.title, '/password-reset');
+            }
+          });
+        }
+      });
+    } else {
+      console.log('Missing tokens in URL or hash');
+>>>>>>> 4438176d7af52e6d26aca0b60d619ba08c3a3c06
       setError('Invalid reset link. Please request a new password reset.');
     }
   }, [searchParams, supabase.auth]);
@@ -72,28 +119,49 @@ const PasswordReset: React.FC = () => {
     }
 
     try {
+<<<<<<< HEAD
       // Check if user has a valid session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError || !session) {
         setError('Invalid or expired reset link. Please request a new password reset.');
+=======
+      console.log('Attempting password update...');
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      console.log('Current session:', { session, sessionError });
+
+      if (sessionError || !session) {
+        setError('No active session. Please request a new password reset link.');
+>>>>>>> 4438176d7af52e6d26aca0b60d619ba08c3a3c06
         setLoading(false);
         return;
       }
 
+<<<<<<< HEAD
       console.log('Current session:', session);
 
       // Update password
       const { data, error } = await supabase.auth.updateUser({
         password: password
+=======
+      const { data, error } = await supabase.auth.updateUser({
+        password: password,
+>>>>>>> 4438176d7af52e6d26aca0b60d619ba08c3a3c06
       });
 
       console.log('Update response:', { data, error });
 
       if (error) {
+<<<<<<< HEAD
         setError(error.message || 'Failed to update password');
+=======
+        console.error('Password update error:', error);
+        setError(`Failed to update password: ${error.message}`);
+>>>>>>> 4438176d7af52e6d26aca0b60d619ba08c3a3c06
       } else {
+        console.log('Password updated successfully:', data);
         setSuccess(true);
+<<<<<<< HEAD
         // Redirect to admin dashboard after 2 seconds
         setTimeout(() => {
           navigate('/admin');
@@ -101,6 +169,12 @@ const PasswordReset: React.FC = () => {
       }
     } catch (err) {
       console.error('Password update error:', err);
+=======
+        setTimeout(() => navigate('/admin'), 2000);
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+>>>>>>> 4438176d7af52e6d26aca0b60d619ba08c3a3c06
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
