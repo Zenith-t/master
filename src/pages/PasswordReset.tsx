@@ -17,19 +17,23 @@ const PasswordReset: React.FC = () => {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    const accessToken = searchParams.get('access_token');
-    const refreshToken = searchParams.get('refresh_token');
+    // Get all possible parameter names that Supabase might use
+    const accessToken = searchParams.get('access_token') || searchParams.get('token');
+    const refreshToken = searchParams.get('refresh_token') || searchParams.get('refresh');
     const type = searchParams.get('type');
     const errorParam = searchParams.get('error');
+    const errorDescription = searchParams.get('error_description');
 
-    console.log('URL Parameters:', { accessToken, refreshToken, type, errorParam });
+    console.log('All URL Parameters:', Object.fromEntries(searchParams.entries()));
+    console.log('Parsed Parameters:', { accessToken, refreshToken, type, errorParam, errorDescription });
 
-    if (errorParam) {
-      setError('Invalid or expired reset link. Please request a new password reset.');
+    if (errorParam || errorDescription) {
+      setError(`Reset link error: ${errorDescription || errorParam}. Please request a new password reset.`);
       return;
     }
 
-    if (type === 'recovery' && accessToken && refreshToken) {
+    // Handle different URL formats that Supabase might send
+    if (accessToken && refreshToken) {
       // Set the session with the tokens from URL
       supabase.auth.setSession({
         access_token: accessToken,
@@ -37,13 +41,23 @@ const PasswordReset: React.FC = () => {
       }).then(({ data, error }) => {
         if (error) {
           console.error('Session error:', error);
-          setError('Invalid or expired reset link. Please request a new password reset.');
+          setError(`Session error: ${error.message}. Please request a new password reset.`);
         } else {
           console.log('Session set successfully:', data);
+          // Verify the session is actually set
+          supabase.auth.getSession().then(({ data: sessionData, error: sessionError }) => {
+            if (sessionError || !sessionData.session) {
+              console.error('Session verification failed:', sessionError);
+              setError('Failed to verify reset session. Please try again.');
+            } else {
+              console.log('Session verified:', sessionData.session);
+            }
+          });
         }
       });
-    } else if (!accessToken || !refreshToken) {
-      setError('Invalid reset link. Please request a new password reset.');
+    } else {
+      console.log('Missing tokens in URL');
+      setError('Invalid reset link format. Please request a new password reset.');
     }
   }, [searchParams, supabase.auth]);
 
@@ -72,16 +86,11 @@ const PasswordReset: React.FC = () => {
     }
 
     try {
-      // Check if user has a valid session
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      console.log('Starting password update...');
       
-      if (sessionError || !session) {
-        setError('Invalid or expired reset link. Please request a new password reset.');
-        setLoading(false);
-        return;
-      }
-
-      console.log('Current session:', session);
+      // Try to get current session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      console.log('Current session check:', { session, sessionError });
 
       // Update password
       const { data, error } = await supabase.auth.updateUser({
@@ -91,8 +100,14 @@ const PasswordReset: React.FC = () => {
       console.log('Update response:', { data, error });
 
       if (error) {
-        setError(error.message || 'Failed to update password');
+        console.error('Password update error:', error);
+        if (error.message.includes('session')) {
+          setError('Session expired. Please request a new password reset link.');
+        } else {
+          setError(`Failed to update password: ${error.message}`);
+        }
       } else {
+        console.log('Password updated successfully:', data);
         setSuccess(true);
         // Redirect to admin dashboard after 2 seconds
         setTimeout(() => {
