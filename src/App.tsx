@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { SupabaseProvider } from './contexts/SupabaseContext';
 import Homepage from './pages/Homepage';
 import AdminLogin from './pages/AdminLogin';
@@ -31,6 +31,7 @@ function App() {
           <Route path="/school-jobs" element={<SchoolJobs />} />
           <Route path="/home-tuition" element={<HomeTuition />} />
           <Route path="/password-reset" element={<PasswordReset />} />
+          <Route path="*" element={<Navigate to="/" replace />} /> {/* Catch-all: Redirect to homepage */}
         </Routes>
       </Router>
     </SupabaseProvider>

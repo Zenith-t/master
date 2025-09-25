@@ -443,21 +443,6 @@ export default function Homepage() {
                   View All Services <ArrowRight className="h-4 w-4 ml-1" />
                 </button>
               </div>
-
-
-              <div className="text-center mt-8">
-                <div className="flex justify-center mb-4">
-                  
-                </div>
-                <div className="bg-orange-100 border border-orange-200 rounded-lg p-4 inline-block">
-                  <p className="text-orange-800 font-semibold">
-                    📞 Before going call to get ₹100 - ₹5000 discount
-                  </p>
-                </div>
-              </div>
-            <br></br>
-
-              
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {clinics.length > 0 ? (
                   clinics.map((clinic) => (
@@ -482,21 +467,6 @@ export default function Homepage() {
                   View All Services <ArrowRight className="h-4 w-4 ml-1" />
                 </button>
               </div>
-
-
-              <div className="text-center mt-8">
-                <div className="flex justify-center mb-4">
-                  
-                </div>
-                <div className="bg-orange-100 border border-orange-200 rounded-lg p-4 inline-block">
-                  <p className="text-orange-800 font-semibold">
-                    📞 Before going call to get ₹100 - ₹5000 discount
-                  </p>
-                </div>
-              </div>
-            <br></br>
-
-              
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {hospitals.length > 0 ? (
                   hospitals.map((hospital) => (
@@ -522,19 +492,11 @@ export default function Homepage() {
                   View All Services <ArrowRight className="h-4 w-4 ml-1" />
                 </button>
               </div>
-
-
-              <div className="text-center mt-8">
-                <div className="flex justify-center mb-4">
-                  
-                </div>
-                <div className="bg-orange-100 border border-orange-200 rounded-lg p-4 inline-block">
-                  <p className="text-orange-800 font-semibold">
-                    📞 Before going call to get ₹100 - ₹5000 discount
-                  </p>
-                </div>
-              </div>
-            <br></br>
+              <div className="bg-orange-100 border border-orange-200 rounded-lg p-4 inline-block">
+            <p className="text-orange-800 font-semibold">
+              📞 Before going call to get ₹100 - ₹5000 discount
+            </p>
+          </div>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {diagnosticCenters.length > 0 ? (
@@ -547,8 +509,6 @@ export default function Homepage() {
                   </div>
                 )}
               </div>
-
-
             </section>
 
             {/* Explore All Services Button */}
