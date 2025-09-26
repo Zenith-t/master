@@ -239,7 +239,7 @@ export default function AdminLogin() {
         </div>
 
         <div className="mt-8 p-4 bg-gray-100 rounded-md text-sm text-gray-600">
-          <p><strong>Go to sb:</strong></p>
+          <p><strong>Go to superbase.com:</strong></p>
           <p>loogin & Select project </p>
           <p>after click Aurthantication</p>
           <p className="text-xs mt-2 text-blue-600">-----------------</p>
