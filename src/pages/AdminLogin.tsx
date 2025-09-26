@@ -239,17 +239,18 @@ export default function AdminLogin() {
         </div>
 
         <div className="mt-8 p-4 bg-gray-100 rounded-md text-sm text-gray-600">
-          <p><strong>-----:</strong></p>
-          <p>------</p>
-          <p>-----</p>
+          <p><strong>Go to sb:</strong></p>
+          <p>loogin & Select project </p>
+          <p>after click Aurthantication</p>
           <p className="text-xs mt-2 text-blue-600">-----------------</p>
           <div className="mt-3 p-2 bg-yellow-100 border border-yellow-300 rounded text-yellow-800">
             <p className="text-xs font-semibold">Setup Steps:</p>
             <ol className="text-xs mt-1 list-decimal list-inside">
-              <li>-------------------</li>
-              <li>------------</li>
-              <li>------------</li>
-              <li>---------------</li>
+              <li>here add your mail and set password</li>
+              <li>that mail and pasowrd throuh you login</li>
+              <li>if you forget remove and add same mail and pasowrd </li>
+              <li>this way you can recover and login</li>
+              <li>Thanku</li>
             </ol>
           </div>
         </div>
