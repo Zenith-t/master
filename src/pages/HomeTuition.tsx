@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Clock, Phone, User, BookOpen } from 'lucide-react';
 import { supabase } from '../contexts/SupabaseContext';
+import SearchBar from '../components/SearchBar';
 
 interface HomeTuitionJob {
   id: string;
@@ -17,12 +18,16 @@ interface HomeTuitionJob {
   contact_phone?: string;
   contact_name?: string;
   created_at: string;
+  school?: string;
+  school_name?: string;
+  subject?: string;
 }
 
 export default function HomeTuition() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<HomeTuitionJob[]>([]);
   const [loading, setLoading] = useState(true);
+  const [q, setQ] = useState('');
 
   useEffect(() => {
     fetchJobs();
@@ -37,7 +42,7 @@ export default function HomeTuition() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      if (data) setJobs(data);
+      if (data) setJobs(data as HomeTuitionJob[]);
     } catch (error) {
       console.error('Error fetching home tuition jobs:', error);
     } finally {
@@ -45,10 +50,26 @@ export default function HomeTuition() {
     }
   };
 
+  const filteredJobs = useMemo(() => {
+    if (!q) return jobs;
+    const needle = q.toLowerCase();
+    return (jobs || []).filter((j) => {
+      const hay = [
+        j.title || '',
+        j.location || '',
+        (j.subject as any) || j.subjects || '',
+        j.student_class || '',
+        j.description || '',
+        j.school || j.school_name || ''
+      ].join(' ').toLowerCase();
+      return hay.includes(needle);
+    });
+  }, [jobs, q]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600" />
       </div>
     );
   }
@@ -81,9 +102,14 @@ export default function HomeTuition() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {jobs.length > 0 ? (
+        {/* Search */}
+        <div className="mb-6">
+          <SearchBar value={q} onChange={setQ} placeholder="Search by title, subject, class, location..." />
+        </div>
+
+        {filteredJobs.length > 0 ? (
           <div className="space-y-6">
-            {jobs.map((job) => (
+            {filteredJobs.map((job) => (
               <div key={job.id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 border border-gray-100">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
@@ -91,23 +117,23 @@ export default function HomeTuition() {
                     <div className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium mb-3">
                       {job.student_class}
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div className="flex items-center text-gray-600">
                         <MapPin className="h-4 w-4 mr-2" />
                         <span>{job.location}</span>
                       </div>
-                      
+
                       <div className="flex items-center text-gray-600">
                         <span className="mr-2">💰</span>
                         <span>₹{job.hourly_rate}/hour</span>
                       </div>
-                      
+
                       <div className="flex items-center text-gray-600">
                         <Clock className="h-4 w-4 mr-2" />
                         <span>{job.experience_required}+ years experience required</span>
                       </div>
-                      
+
                       <div className="flex items-center text-gray-600">
                         <User className="h-4 w-4 mr-2" />
                         <span>Preferred: {job.preferred_gender}</span>
@@ -153,7 +179,7 @@ export default function HomeTuition() {
                         Call {job.contact_name ? job.contact_name : 'Parent'}: {job.contact_phone}
                       </a>
                     )}
-                    
+
                     {job.contact_phone && (
                       <a
                         href={`https://wa.me/917678229653`}
@@ -167,7 +193,7 @@ export default function HomeTuition() {
                         WhatsApp
                       </a>
                     )}
-                    
+
                     {!job.contact_phone && (
                       <div className="text-center py-3 text-gray-500">
                         Contact information not available
@@ -182,7 +208,7 @@ export default function HomeTuition() {
           <div className="text-center py-12">
             <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No Home Tuition Jobs Available</h3>
-            <p className="text-gray-500">Check back later for new tutoring opportunities.</p>
+            <p className="text-gray-500">Try different search keywords.</p>
           </div>
         )}
       </div>

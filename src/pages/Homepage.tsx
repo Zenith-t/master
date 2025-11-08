@@ -26,6 +26,7 @@ export default function Homepage() {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sliderImages, setSliderImages] = useState<SliderImage[]>([]);
+  const [imagesLoaded, setImagesLoaded] = useState<{ [key: string]: boolean }>({});
   const [activeTab, setActiveTab] = useState<'health' | 'tutors'>('health');
   const [clinics, setClinics] = useState<ServiceItem[]>([]);
   const [hospitals, setHospitals] = useState<ServiceItem[]>([]);
@@ -315,7 +316,7 @@ export default function Homepage() {
       </header>
 
       {/* Image Slider */}
-      <div className="relative h-96 overflow-hidden">
+      <div className="relative h-96 overflow-hidden bg-gray-200">
         {sliderImages.length > 0 && (
           <>
             <div className="absolute inset-0 transition-transform duration-500 ease-in-out"
@@ -323,19 +324,38 @@ export default function Homepage() {
               <div className="flex h-full">
                 {sliderImages.map((image, index) => (
                   <div key={image.id} className="w-full h-full flex-shrink-0 relative">
+                    {!imagesLoaded[image.id] && (
+                      <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-300 via-gray-200 to-gray-300 bg-[length:200%_100%]">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="text-center">
+                            <div className="relative w-16 h-16 mx-auto mb-4">
+                              <div className="absolute inset-0 rounded-full border-4 border-blue-200"></div>
+                              <div className="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
+                            </div>
+                            <div className="h-8 bg-gray-300 rounded-lg w-64 mx-auto mb-3"></div>
+                            <div className="h-4 bg-gray-300 rounded-lg w-48 mx-auto"></div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <img
                       src={image.image_url}
                       alt={image.title}
-                      className="w-full h-full object-cover"
+                      className={`w-full h-full object-cover transition-opacity duration-500 ${
+                        imagesLoaded[image.id] ? 'opacity-100' : 'opacity-0'
+                      }`}
+                      onLoad={() => setImagesLoaded(prev => ({ ...prev, [image.id]: true }))}
                     />
-                    <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                      <div className="text-center">
-                        <h2 className="text-4xl font-bold text-white mb-6">{image.title}</h2>
-                        <div className="flex justify-center space-x-4">
-                         
+                    {imagesLoaded[image.id] && (
+                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                        <div className="text-center">
+                          <h2 className="text-4xl font-bold text-white mb-6">{image.title}</h2>
+                          <div className="flex justify-center space-x-4">
+
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 ))}
               </div>

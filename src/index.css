@@ -10,7 +10,7 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
+
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -19,7 +19,27 @@
   }
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
 
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    90deg,
+    #e5e7eb 0%,
+    #f3f4f6 25%,
+    #e5e7eb 50%,
+    #f3f4f6 75%,
+    #e5e7eb 100%
+  );
+  background-size: 200% 100%;
+}
 
 @keyframes spin-dot {
   0%   { transform: rotate(0deg) translateX(110%) rotate(0deg); }

@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { SupabaseProvider } from './contexts/SupabaseContext';
+import { PWAProvider } from './contexts/PWAContext';
+import { InstallPrompt } from './components/InstallPrompt';
 import Homepage from './pages/Homepage';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
@@ -17,22 +19,25 @@ import PasswordReset from './pages/PasswordReset';
 function App() {
   return (
     <SupabaseProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Homepage />} />
-          <Route path="/health" element={<HealthServices />} />
-          <Route path="/clinics" element={<ClinicsPage />} />
-          <Route path="/hospitals" element={<HospitalsPage />} />
-          <Route path="/diagnostic-centers" element={<DiagnosticCentersPage />} />
-          <Route path="/blogs/:category" element={<BlogList />} />
-          <Route path="/blog/:category/:slug" element={<BlogDetail />} />
-          <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/school-jobs" element={<SchoolJobs />} />
-          <Route path="/home-tuition" element={<HomeTuition />} />
-          <Route path="/password-reset" element={<PasswordReset />} />
-        </Routes>
-      </Router>
+      <PWAProvider>
+        <Router>
+          <InstallPrompt />
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/health" element={<HealthServices />} />
+            <Route path="/clinics" element={<ClinicsPage />} />
+            <Route path="/hospitals" element={<HospitalsPage />} />
+            <Route path="/diagnostic-centers" element={<DiagnosticCentersPage />} />
+            <Route path="/blogs/:category" element={<BlogList />} />
+            <Route path="/blog/:category/:slug" element={<BlogDetail />} />
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/school-jobs" element={<SchoolJobs />} />
+            <Route path="/home-tuition" element={<HomeTuition />} />
+            <Route path="/password-reset" element={<PasswordReset />} />
+          </Routes>
+        </Router>
+      </PWAProvider>
     </SupabaseProvider>
   );
 }
