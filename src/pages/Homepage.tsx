@@ -900,14 +900,7 @@ export default function Homepage() {
                         <p><strong>Rate:</strong> ₹{job.hourly_rate}/hour</p>
                         {job.schedule && <p><strong>Schedule:</strong> {job.schedule}</p>}
                       </div>
-                      {job.contact_phone && (
-                        <a
-                          href={`tel:${job.contact_phone}`}
-                          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors w-full inline-block text-center"
-                        >
-                          Contact Parent
-                        </a>
-                      )}
+           
                     </div>
                   ))
                 ) : (
