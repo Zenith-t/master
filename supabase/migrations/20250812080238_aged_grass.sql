@@ -101,8 +101,8 @@ INSERT INTO blogs (title, slug, content, excerpt, category, meta_title, meta_des
 Following these simple yet effective tips can lead to a healthier, happier life. Remember, small changes can make a big difference in your overall health journey.',
   'Discover the top 10 essential health tips that can transform your lifestyle and improve your overall well-being. Expert advice for better living.',
   'health',
-  'Top 10 Health Tips for Better Living | HealthCare Plus',
-  'Discover essential health tips for better living. Expert advice on nutrition, exercise, sleep, and wellness from HealthCare Plus professionals.',
+  'Top 10 Health Tips for Better Living | Zenith Health',
+  'Discover essential health tips for better living. Expert advice on nutrition, exercise, sleep, and wellness from Zenith Health professionals.',
   'health tips, wellness, healthy lifestyle, nutrition, exercise, healthcare, better living, wellness tips',
   true,
   8
@@ -137,10 +137,10 @@ When selecting a healthcare provider, consider:
 
 ## Our Network of Specialists
 
-At HealthCare Plus, we have a comprehensive network of qualified specialists across all major medical fields. Our team is committed to providing exceptional care tailored to your individual needs.',
+At Zenith Health, we have a comprehensive network of qualified specialists across all major medical fields. Our team is committed to providing exceptional care tailored to your individual needs.',
   'Learn about different medical specializations and how to choose the right healthcare provider for your specific needs.',
   'health',
-  'Understanding Medical Specializations | HealthCare Plus',
+  'Understanding Medical Specializations | Zenith Health',
   'Learn about different medical specializations including dermatology, general medicine, ENT, and surgery. Find the right specialist for your healthcare needs.',
   'medical specializations, dermatology, general medicine, ENT, surgery, healthcare providers, medical specialists',
   true,
@@ -181,10 +181,10 @@ Regular check-ups provide reassurance about your health status and help address 
 
 ## Book Your Check-up Today
 
-Don''t wait for symptoms to appear. Schedule your regular health check-up with our experienced healthcare professionals at HealthCare Plus.',
+Don''t wait for symptoms to appear. Schedule your regular health check-up with our experienced healthcare professionals at Zenith Health.',
   'Discover why regular health check-ups are essential for maintaining good health and preventing serious medical conditions.',
   'health',
-  'Importance of Regular Health Check-ups | HealthCare Plus',
+  'Importance of Regular Health Check-ups | Zenith Health',
   'Learn why regular health check-ups are crucial for early detection, prevention, and maintaining optimal health. Schedule your check-up today.',
   'health checkups, preventive care, early detection, health screening, medical examination, healthcare',
   true,

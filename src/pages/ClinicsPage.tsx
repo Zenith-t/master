@@ -72,7 +72,7 @@ export default function ClinicsPage() {
               >
                 <ArrowLeft className="h-5 w-5" />
               </button>
-              <h1 className="text-2xl font-bold text-blue-600">HealthCare Plus</h1>
+              <h1 className="text-2xl font-bold text-blue-600">Zenith Health</h1>
             </div>
             <div className="flex items-center">
               <Phone className="h-5 w-5 mr-2 text-blue-600" />
@@ -181,7 +181,7 @@ export default function ClinicsPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Company Info */}
             <div className="md:col-span-1">
-              <h3 className="text-xl font-bold mb-4">HealthCare Plus</h3>
+              <h3 className="text-xl font-bold mb-4">Zenith Health</h3>
               <p className="text-gray-400 mb-4">Your trusted healthcare partner providing quality medical services and educational resources.</p>
               <div className="flex items-center mb-2">
                 <Phone className="h-4 w-4 mr-2" />
@@ -234,7 +234,7 @@ export default function ClinicsPage() {
           <div className="border-t border-gray-800 mt-8 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="text-sm text-gray-400 mb-4 md:mb-0">
-                © 2024 HealthCare Plus. All rights reserved.
+                © 2024 Zenith Health. All rights reserved.
               </div>
               <div className="flex space-x-6 text-sm text-gray-400">
                 <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>

@@ -87,7 +87,7 @@ export default function HomeTuition() {
               >
                 <ArrowLeft className="h-5 w-5" />
               </button>
-              <h1 className="text-2xl font-bold text-blue-600">HealthCare Plus</h1>
+              <h1 className="text-2xl font-bold text-blue-600">Zenith Health</h1>
             </div>
           </div>
         </div>
@@ -217,7 +217,7 @@ export default function HomeTuition() {
       <footer className="bg-gray-900 text-white py-8 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h3 className="text-xl font-bold mb-4">Zenith Tutors - HealthCare Plus</h3>
+            <h3 className="text-xl font-bold mb-4">Zenith Tutors - Zenith Health</h3>
             <p className="text-gray-400">Connecting tutors with students</p>
             <div className="mt-4 flex justify-center items-center">
               <Phone className="h-5 w-5 mr-2" />

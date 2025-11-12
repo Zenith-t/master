@@ -1,5 +1,5 @@
 -- =====================================================
--- ZENITH TUTORS - HEALTHCARE PLUS DATABASE BACKUP
+-- ZENITH TUTORS - Zenith Health DATABASE BACKUP
 -- Generated on: 2025-01-15
 -- Database: Supabase PostgreSQL
 -- =====================================================
@@ -404,7 +404,7 @@ Regular handwashing and maintaining personal hygiene can prevent many illnesses.
 ## 10. Stay Positive
 A positive mindset can improve your immune system and overall health. Practice gratitude and focus on the good things in life.
 
-Remember, small changes in your daily routine can lead to significant improvements in your health over time.', 'Discover 10 essential tips for maintaining a healthy lifestyle and improving your overall well-being.', 'https://images.pexels.com/photos/4386473/pexels-photo-4386473.jpeg', 'health', '10 Essential Tips for Healthy Living | HealthCare Plus', 'Learn 10 practical tips for healthy living including diet, exercise, sleep, and stress management for better overall health.', 'healthy living, health tips, wellness, diet, exercise, sleep, stress management', true, 'Dr. Health Expert', 5, 150),
+Remember, small changes in your daily routine can lead to significant improvements in your health over time.', 'Discover 10 essential tips for maintaining a healthy lifestyle and improving your overall well-being.', 'https://images.pexels.com/photos/4386473/pexels-photo-4386473.jpeg', 'health', '10 Essential Tips for Healthy Living | Zenith Health', 'Learn 10 practical tips for healthy living including diet, exercise, sleep, and stress management for better overall health.', 'healthy living, health tips, wellness, diet, exercise, sleep, stress management', true, 'Dr. Health Expert', 5, 150),
 
 ('Effective Study Techniques for Students', 'effective-study-techniques-students', 'Success in academics requires more than just hard work; it requires smart study techniques. Here are proven methods to enhance your learning:
 
@@ -455,7 +455,7 @@ CREATE INDEX IF NOT EXISTS idx_diagnostic_centers_active ON public.diagnostic_ce
 
 -- =====================================================
 -- BACKUP COMPLETE
--- Database: Zenith Tutors - HealthCare Plus
+-- Database: Zenith Tutors - Zenith Health
 -- Tables: 9 main tables with sample data
 -- Features: RLS policies, triggers, indexes
 -- =====================================================
