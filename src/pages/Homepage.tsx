@@ -304,12 +304,6 @@ export default function Homepage() {
                 <Phone className="h-5 w-5 mr-2" />
                 <span className="font-semibold">Call: +91 7678229653</span>
               </div>
-              <button 
-                onClick={() => navigate('/admin')}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
-              >
-                Admin Login
-              </button>
             </div>
           </div>
         </div>
@@ -346,16 +340,6 @@ export default function Homepage() {
                       }`}
                       onLoad={() => setImagesLoaded(prev => ({ ...prev, [image.id]: true }))}
                     />
-                    {imagesLoaded[image.id] && (
-                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                        <div className="text-center">
-                          <h2 className="text-4xl font-bold text-white mb-6">{image.title}</h2>
-                          <div className="flex justify-center space-x-4">
-
-                          </div>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
@@ -1183,10 +1167,57 @@ export default function Homepage() {
             <div>
               <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="/" className="hover:text-white transition-colors">Home</a></li>
-                <li><a href="/health" className="hover:text-white transition-colors">Health Services</a></li>
                 <li><a href="/admin" className="hover:text-white transition-colors">Admin Panel</a></li>
               </ul>
+
+              {/* PWA Install Buttons */}
+              <div className="mt-6">
+                <h4 className="text-sm font-semibold mb-3 text-gray-300">Install App</h4>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => {
+                      if ('serviceWorker' in navigator) {
+                        const deferredPrompt = (window as any).deferredPrompt;
+                        if (deferredPrompt) {
+                          deferredPrompt.prompt();
+                          deferredPrompt.userChoice.then(() => {
+                            (window as any).deferredPrompt = null;
+                          });
+                        } else {
+                          alert('Install prompt not available. Add to home screen from your browser menu.');
+                        }
+                      }
+                    }}
+                    className="flex items-center justify-center w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M17.523 7c-1.025-1.02-2.558-1-3.583.02L12 8.94 10.06 7c-1.026-1.02-2.559-1.04-3.584-.02-1.025 1.02-1.025 2.66 0 3.68L12 16l5.523-5.34c1.026-1.02 1.026-2.66 0-3.68z"/>
+                    </svg>
+                    Android - Install
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+                      if (isIOS && isSafari) {
+                        alert('To install on iOS:\n\n1. Tap the Share button (⬆️)\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add" in the top right');
+                      } else if (isIOS) {
+                        alert('Please open this site in Safari browser to install on iOS:\n\n1. Open Safari\n2. Visit this website\n3. Tap Share (⬆️)\n4. Tap "Add to Home Screen"');
+                      } else {
+                        alert('iOS installation is only available on iPhone/iPad using Safari browser.');
+                      }
+                    }}
+                    className="flex items-center justify-center w-full bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                    </svg>
+                    iOS - Install Guide
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

@@ -6,6 +6,7 @@ export function setupPWAInstall() {
   window.addEventListener("beforeinstallprompt", (e: any) => {
     e.preventDefault();
     deferredPrompt = e;
+    (window as any).deferredPrompt = e;
     if (btn) btn.style.display = "inline-flex";
   });
 
@@ -17,6 +18,7 @@ export function setupPWAInstall() {
       await deferredPrompt.userChoice;
     } finally {
       deferredPrompt = null;
+      (window as any).deferredPrompt = null;
     }
   });
 }

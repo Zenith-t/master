@@ -182,7 +182,7 @@ export default function HomeTuition() {
 
                     {job.contact_phone && (
                       <a
-                        href={`https://wa.me/917678229653`}
+                        href={`https://wa.me/917678229653?text=I%20am%20interested%20to%20know%20about%20${encodeURIComponent(job.title)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-center bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600 transition-colors"
