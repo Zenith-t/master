@@ -381,7 +381,7 @@ export default function Homepage() {
           className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center shadow-lg"
         >
           <Phone className="h-5 w-5 mr-2" />
-          Call Now
+          Call
         </a>
         
         <a
